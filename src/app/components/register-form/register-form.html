@@ -1,0 +1,62 @@
+<div class="max-w-md mx-auto mt-12 p-8 bg-white rounded-xl shadow-lg border-t-8 border-indigo-500 font-sans">
+  <h2 class="text-2xl font-bold text-gray-800 mb-1">Create an Account 🚀</h2>
+  <p class="text-sm text-gray-500 mb-8">Join our product management system.</p>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-6">
+    
+    <div class="flex flex-col space-y-2">
+      <label for="reg-name" class="text-sm font-semibold text-gray-700">Username</label>
+      <input type="text" id="reg-name" formControlName="username" placeholder="Enter your username" 
+             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             [class.border-red-500]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+             [class.border-gray-300]="!(registerForm.get('username')?.invalid && registerForm.get('username')?.touched)">
+             
+      @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+        <span class="text-red-500 text-xs font-medium">Username is required.</span>
+      }
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="reg-password" class="text-sm font-semibold text-gray-700">Password</label>
+      <input type="password" id="reg-password" formControlName="password" placeholder="Create a password" 
+             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+             [class.border-gray-300]="!(registerForm.get('password')?.invalid && registerForm.get('password')?.touched)">
+             
+      @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+        <div class="text-red-500 text-xs font-medium flex flex-col">
+          @if (registerForm.get('password')?.hasError('required')) {
+            <span>Password is required.</span>
+          }
+          @if (registerForm.get('password')?.hasError('minlength')) {
+            <span>Password must be at least 6 characters.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="reg-confirm" class="text-sm font-semibold text-gray-700">Confirm Password</label>
+      <input type="password" id="reg-confirm" formControlName="confirmPassword" placeholder="Confirm your password" 
+             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             [class.border-red-500]="(registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched"
+             [class.border-gray-300]="!((registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched)">
+             
+      @if (registerForm.get('confirmPassword')?.touched) {
+        <div class="text-red-500 text-xs font-medium flex flex-col">
+          @if (registerForm.get('confirmPassword')?.hasError('required')) {
+            <span>Please confirm your password.</span>
+          }
+          @if (registerForm.hasError('passwordMismatch') && !registerForm.get('confirmPassword')?.hasError('required')) {
+            <span>Passwords do not match.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <button type="submit" 
+            class="w-full py-3 hover:cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors mt-2">
+      Sign Up
+    </button>
+  </form>
+</div>
