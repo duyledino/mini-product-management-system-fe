@@ -4,6 +4,8 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { NgModule } from '@angular/core';
 import { Product } from './pages/product/product';
+import { ProductDetail } from './pages/product-detail/product-detail';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
     {
@@ -25,11 +27,19 @@ export const routes: Routes = [
         path: 'product',
         component: Product,
         title: 'Product',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'product/:id',
+        component: ProductDetail,
+        title: 'Product Detail',
+        canActivate: [authGuard]
     },
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule],
+
 })
 export class AppRoutingModule { }

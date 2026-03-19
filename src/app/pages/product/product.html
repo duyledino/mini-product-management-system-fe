@@ -1,13 +1,32 @@
 <div class="bg-white">
-  <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-gray-900">Customers also purchased</h2>
+@if (isAdminOrManager()) {
+      <button (click)="isModalOpen.set(true)" class="w-[200px] cursor-pointer bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+        Create Product
+      </button>
+    }
+    </div>
 
-    <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-      
+    <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+  
       @for (item of products; track item.id) {
         <app-product-item [product]="item"></app-product-item>
       }
 
     </div>
+    
+    @if (productStore.isLoading()) {
+      <div class="text-center py-10">Loading products...</div>
+    }
   </div>
 </div>
+
+@if (isModalOpen()) {
+  <app-product-modal 
+    [product]="null" 
+    (close)="isModalOpen.set(false)"
+    (save)="handleSave($event)">
+  </app-product-modal>
+}

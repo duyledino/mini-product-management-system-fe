@@ -9,17 +9,18 @@
       </div>
 
       <div class="flex space-x-2 sm:space-x-4">
-        <!-- @if(authStore.isAuthenticated()){ -->
+        @if(authStore.isAuthenticated()){
           <a routerLink="/product" 
            class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
            Product
         </a>
-        <!-- } -->
+        }
         <a routerLink="/" 
            class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
            Home
         </a>
-        <a routerLink="/login" 
+        @if (!authStore.isAuthenticated()) {
+          <a routerLink="/login" 
            class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
            Login
         </a>
@@ -27,6 +28,7 @@
            class="px-3 py-2 rounded-md text-sm font-medium bg-white text-indigo-600 hover:bg-gray-100 transition-colors">
            Sign Up
         </a>
+        }
       </div>
 
     </div>

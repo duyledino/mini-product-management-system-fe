@@ -1,0 +1,107 @@
+@if (productDetail(); as p) {
+  <div class="bg-white min-h-screen p-8">
+    <div class="max-w-7xl mx-auto lg:grid lg:grid-cols-2 lg:gap-x-12">
+      
+      <div class="space-y-6">
+        <nav class="flex text-sm font-medium text-gray-500 mb-4">
+          <a routerLink="/product" class="hover:text-indigo-600 cursor-pointer">Products</a>
+          <span class="mx-2">/</span>
+          <span class="text-gray-900">{{ p.name }}</span>
+        </nav>
+
+        <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">{{ p.name }}</h1>
+        
+        <div class="border-t border-gray-200 pt-6">
+          <h3 class="text-sm font-medium text-gray-900">Description</h3>
+          <p class="mt-4 text-base text-gray-500 leading-relaxed">{{ p.description }}</p>
+        </div>
+        <div class="border-t border-gray-200 pt-6">
+          <h3 class="text-sm font-medium text-gray-900">Stock Quantity</h3>
+          <p class="mt-4 text-base text-gray-500 leading-relaxed">{{ p.stockQuantity }}</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span [class]="p.public ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                class="px-2 py-1 text-xs font-bold rounded-full uppercase">
+            {{ p.public ? 'Public' : 'Private' }}
+          </span>
+        </div>
+        {{log(authStore.currentUser())}}
+      @if (isAdmin()) {
+        <div class="flex flex-col">
+          <button (click)="openModal()" class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+            Edit Product
+          </button>
+          <button class="w-full cursor-pointer mt-10 bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 shadow-lg shadow-red-200 transition-all active:scale-95">
+            Delete Product
+          </button>
+        </div>
+      }
+      @else if (isOwnerManager()) {
+          <div class="flex flex-col">
+            <button (click)="openModal()" class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+              Edit Product
+            </button>
+            <button class="w-full cursor-pointer mt-10 bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 shadow-lg shadow-red-200 transition-all active:scale-95">
+                Create Product Version
+            </button>
+          </div>
+        }
+      </div>
+      
+      <div class="mt-10 lg:mt-0 bg-gray-50 rounded-3xl p-8 border border-gray-100">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Pricing & Versions</h2>
+        
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold text-gray-700">Name</span>
+          <p class="text-5xl font-black text-indigo-600 mb-8">
+            {{ selectedVersion()?.name || p.name }}
+          </p>
+            <span class="text-sm font-semibold text-gray-700">Price</span>
+          <p class="text-5xl font-black text-indigo-600 mb-8">
+            ${{ selectedVersion()?.price || p.price }}
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <label class="block text-sm font-semibold text-gray-700">Available Versions</label>
+          
+          <div class="grid grid-cols-1 gap-3">
+            @for (v of p.productVersionList; track v.currentVersion) {
+              <button 
+                (click)="selectVersion(v)"
+                [class.border-indigo-600]="selectedVersion()?.currentVersion === v.currentVersion"
+                [class.bg-white]="selectedVersion()?.currentVersion === v.currentVersion"
+                class="flex justify-between items-center p-4 rounded-xl border-2 border-transparent bg-gray-100 hover:border-indigo-300 transition-all text-left">
+                <div>
+                  <span class="block font-bold text-gray-900">{{ v.name }}</span>
+                  <span class="text-xs text-gray-500 uppercase">Ver. {{ v.currentVersion }}</span>
+                </div>
+                <span class="font-semibold text-indigo-600">${{ v.price }}</span>
+              </button>
+            } @empty {
+              <p class="text-sm text-gray-400 italic">No additional versions available.</p>
+            }
+          </div>
+        </div>
+
+        <button class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+          Add to Order
+        </button>
+      </div>
+
+    </div>
+  </div>
+} @else {
+  <div class="animate-pulse max-w-7xl mx-auto p-8 grid grid-cols-2 gap-12">
+    <div class="h-96 bg-gray-200 rounded-3xl"></div>
+    <div class="h-96 bg-gray-100 rounded-3xl"></div>
+  </div>
+}
+
+@if (isModalOpen()) {
+  <app-product-modal 
+    [product]="productDetail()" 
+    (close)="isModalOpen.set(false)"
+    (save)="handleSave($event)">
+  </app-product-modal>
+}
