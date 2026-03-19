@@ -3,6 +3,7 @@ import { Homepage } from './pages/homepage/homepage';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { NgModule } from '@angular/core';
+import { Product } from './pages/product/product';
 
 export const routes: Routes = [
     {
@@ -19,6 +20,11 @@ export const routes: Routes = [
         path: 'register',
         component: Register,
         title: 'Register',
+    },
+    {
+        path: 'product',
+        component: Product,
+        title: 'Product',
     },
 ];
 
