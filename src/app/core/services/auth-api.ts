@@ -18,4 +18,8 @@ export class AuthApi {
   login(user: any) {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.API_URL}/login`, user);
   }
+
+  refreshToken(refreshToken: string){
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.API_URL}/refresh`, {refreshToken});
+  }
 }

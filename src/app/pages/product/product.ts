@@ -30,7 +30,8 @@ export class Product implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        this.toastr.error(error.error.message);
+        this.productStore.loadProducts();
+        // this.toastr.error(error.error.message);
       }
 
     });

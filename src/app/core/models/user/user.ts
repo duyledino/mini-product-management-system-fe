@@ -11,3 +11,9 @@ export interface Profile{
     roles: Role[],
     active: boolean
 }
+
+export interface UpdateProfileRequest{
+    name: string,
+    avatar: string,
+    age: number
+}

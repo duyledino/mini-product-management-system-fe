@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductStore } from '../../core/state/product-store';
 import { ToastrService } from 'ngx-toastr';
 import { ProductDetail as ProductDetailModel, ProductVersion } from '../../core/models/product/product';
@@ -23,6 +23,7 @@ export class ProductDetail implements OnInit {
  public selectedVersion = signal<ProductVersion | null>(null);
  public authStore = inject(AuthStore);
  public isModalOpen = signal(false);
+ private router = inject(Router);
  stockQuantity = computed(()=>this.productStore.productDetail()?.stockQuantity);
   ngOnInit(): void {
     this.productStore.loadProductDetail(this.route.snapshot.params['id']).subscribe({
@@ -33,12 +34,25 @@ export class ProductDetail implements OnInit {
       },
       error: (error) => {
         console.log("error: ",error);
-        this.toastr.error(error.error.error);
+        this.productStore.loadProductDetail(this.route.snapshot.params['id']);
+        // this.toastr.error(error.error.error);
       }
     });
   }
   openModal() {
     this.isModalOpen.set(true);
+  }
+  deleteProduct() {
+    this.productStore.deleteProduct(this.productDetail()?.id!).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.router.navigate(['/product']);
+      },
+      error: (error) => {
+        console.log("error: ",error);
+        this.toastr.error(error.error.error);
+      }
+    });
   }
   handleSave(formData: any) {    
     console.log("formData in product-detail: ",formData);

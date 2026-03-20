@@ -18,6 +18,10 @@ export class ProductApi {
   updateProduct(id: string, product: updateProductRequest){
     return this.http.put<ApiResponse<ProductPublic>>(this.baseUrl + '/' + id,product);
   }
+  deleteProduct(id: string){
+    console.log("id: ",id);
+    return this.http.delete<ApiResponse<string>>(this.baseUrl + '/' + id);
+  }
   createProduct(product: createProductRequest){
     console.log("product: ",product);
     return this.http.post<ApiResponse<ProductPublic>>(this.baseUrl,product);

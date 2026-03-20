@@ -31,7 +31,7 @@
           <button (click)="openModal()" class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
             Edit Product
           </button>
-          <button class="w-full cursor-pointer mt-10 bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 shadow-lg shadow-red-200 transition-all active:scale-95">
+          <button (click)="deleteProduct()" class="w-full cursor-pointer mt-10 bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 shadow-lg shadow-red-200 transition-all active:scale-95">
             Delete Product
           </button>
         </div>
@@ -41,7 +41,7 @@
             <button (click)="openModal()" class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
               Edit Product
             </button>
-            <button class="w-full cursor-pointer mt-10 bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 shadow-lg shadow-red-200 transition-all active:scale-95">
+            <button class="w-full cursor-pointer mt-10 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
                 Create Product Version
             </button>
           </div>
@@ -83,7 +83,7 @@
             }
           </div>
         </div>
-<app-add-to-cart [product]="p"></app-add-to-cart>
+        <app-add-to-cart [product]="p"></app-add-to-cart>
         <!-- <app-add-to-cart [product]="productDetail()"></app-add-to-cart> -->
       </div>
 

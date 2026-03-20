@@ -51,6 +51,7 @@ export class AuthStore {
           this.isLoading.set(false);
           this.toastr.success(response.message || 'Login successful');
           localStorage.setItem('access_token', response.data.accessToken);
+          localStorage.setItem('refresh_token', response.data.refreshToken);  
           this.profileApi.getProfile().subscribe({
             next: (response) => {
               console.log('Profile response: ',response);

@@ -16,8 +16,20 @@ export class Admin implements OnInit {
 
   readonly allRoles = ['ADMIN', 'MANAGER', 'CUSTOMER'];
 
+  logs():void{
+    console.log(this.adminStore.users());
+  }
+
   ngOnInit(): void {
-    this.adminStore.loadUsers().subscribe();
+    this.adminStore.loadUsers().subscribe({
+      next: () => {
+        console.log(this.adminStore.users());
+      },
+      error: (error) => {
+        console.error(error);
+        this.adminStore.loadUsers().subscribe();
+      }
+    });
   }
 
   getAvailableRoles(user: Profile): string[] {

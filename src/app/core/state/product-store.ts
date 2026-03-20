@@ -16,6 +16,7 @@ export class ProductStore {
   public isLoadingDetail = signal<boolean>(false);
   public isLoadingUpdate = signal<boolean>(false);
   public isLoadingCreate = signal<boolean>(false);
+  public isLoadingDelete = signal<boolean>(false);
   loadProductDetail(id: string){
     this.isLoadingDetail.set(true);
     return this.productApi.getDetailProduct(id).pipe(tap({
@@ -60,6 +61,17 @@ export class ProductStore {
       },
       error: (error) => {
         this.isLoadingCreate.set(false);
+      }
+    }));
+  }
+  deleteProduct(id: string){
+    this.isLoadingDelete.set(true);
+    return this.productApi.deleteProduct(id).pipe(tap({
+      next: (response) => {
+        this.isLoadingDelete.set(false);
+      },
+      error: (error) => {
+        this.isLoadingDelete.set(false);
       }
     }));
   }

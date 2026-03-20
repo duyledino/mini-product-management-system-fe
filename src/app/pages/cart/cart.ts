@@ -22,7 +22,8 @@ export class Cart implements OnInit {
         console.log(this.cart());
       },
       error: (error) => {
-        this.toast.error(error.message);
+        // this.toast.error(error.message);
+        this.cartStore.loadCart().subscribe();
         console.error(error);
       }
     });

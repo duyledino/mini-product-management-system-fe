@@ -9,6 +9,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin-guard';
 import { Cart } from './pages/cart/cart';
 import { Admin } from './pages/admin/admin';
+import { Profile } from './pages/profile/profile';
 
 export const routes: Routes = [
     {
@@ -42,6 +43,12 @@ export const routes: Routes = [
         path: 'cart',
         component: Cart,
         title: 'Cart',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'profile',
+        component: Profile,
+        title: 'My Profile',
         canActivate: [authGuard]
     },
     {

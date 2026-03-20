@@ -23,7 +23,7 @@ export class AdminStore {
       }),
       catchError((error) => {
         this.isLoading.set(false);
-        this.toastr.error(error.error?.message || 'Failed to load users');
+        // this.toastr.error(error.error?.message || 'Failed to load users');
         return of(null);
       })
     );
