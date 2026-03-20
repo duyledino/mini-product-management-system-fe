@@ -19,6 +19,7 @@ export class ProductApi {
     return this.http.put<ApiResponse<ProductPublic>>(this.baseUrl + '/' + id,product);
   }
   createProduct(product: createProductRequest){
+    console.log("product: ",product);
     return this.http.post<ApiResponse<ProductPublic>>(this.baseUrl,product);
   }
 }

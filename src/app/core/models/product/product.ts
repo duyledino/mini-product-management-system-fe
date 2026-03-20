@@ -35,4 +35,5 @@ export interface createProductRequest{
     description: string;
     price: number;
     public: boolean;
+    stockQuantity: number;
 }

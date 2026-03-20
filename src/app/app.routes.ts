@@ -6,6 +6,9 @@ import { NgModule } from '@angular/core';
 import { Product } from './pages/product/product';
 import { ProductDetail } from './pages/product-detail/product-detail';
 import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
+import { Cart } from './pages/cart/cart';
+import { Admin } from './pages/admin/admin';
 
 export const routes: Routes = [
     {
@@ -35,6 +38,18 @@ export const routes: Routes = [
         title: 'Product Detail',
         canActivate: [authGuard]
     },
+    {
+        path: 'cart',
+        component: Cart,
+        title: 'Cart',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'admin',
+        component: Admin,
+        title: 'Admin Panel',
+        canActivate: [authGuard, adminGuard]
+    }
 ];
 
 @NgModule({

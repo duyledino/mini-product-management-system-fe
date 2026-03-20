@@ -7,10 +7,11 @@ import { provideToastr } from 'ngx-toastr';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { AuthStore } from './core/state/auth-store';
-import { map } from 'rxjs';
 
 function initilizeApp(authStore: AuthStore) {
-  return () => authStore.loadUserProfile();
+  return () =>{
+    return authStore.loadUserProfile();
+  };
 }
 
 export const appConfig: ApplicationConfig = {

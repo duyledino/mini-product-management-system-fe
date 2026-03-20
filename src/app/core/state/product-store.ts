@@ -52,6 +52,7 @@ export class ProductStore {
     }));
   }
   createProduct(product: createProductRequest){
+    console.log("product: ",product);
     this.isLoadingCreate.set(true);
     return this.productApi.createProduct(product).pipe(tap({
       next: (response) => {

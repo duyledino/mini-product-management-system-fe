@@ -19,6 +19,7 @@ export class Product implements OnInit {
   private toastr = inject(ToastrService);
   // private productService = inject(this.productService);
   // private product:ProductItem[] = 
+  readonly isLoading = this.productStore.isLoading;
   public isModalOpen = signal(false);
   public products: ProductPublic[]  = [];  
   ngOnInit(): void {
@@ -40,6 +41,7 @@ handleSave(formData: any) {
     ...rest,
     isPublic: isPublic ?? true
   };
+  console.log("formData: ",formData,"payload here: ",payload);
   this.productStore.createProduct(payload).subscribe({
     next: (response) => {
       this.toastr.success(response.message);

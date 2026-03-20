@@ -6,10 +6,11 @@ import { ProductDetail as ProductDetailModel, ProductVersion } from '../../core/
 import { CommonModule } from '@angular/common';
 import { AuthStore } from '../../core/state/auth-store';
 import { ProductModal } from '../../components/product-modal/product-modal';
+import { AddToCart } from "../../components/add-to-cart/add-to-cart";
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule,RouterLink,ProductModal],
+  imports: [CommonModule, RouterLink, ProductModal, AddToCart],
   standalone:true,
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
@@ -22,6 +23,7 @@ export class ProductDetail implements OnInit {
  public selectedVersion = signal<ProductVersion | null>(null);
  public authStore = inject(AuthStore);
  public isModalOpen = signal(false);
+ stockQuantity = computed(()=>this.productStore.productDetail()?.stockQuantity);
   ngOnInit(): void {
     this.productStore.loadProductDetail(this.route.snapshot.params['id']).subscribe({
       next: (response) => {
