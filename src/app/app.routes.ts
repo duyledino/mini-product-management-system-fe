@@ -3,6 +3,13 @@ import { Homepage } from './pages/homepage/homepage';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { NgModule } from '@angular/core';
+import { Product } from './pages/product/product';
+import { ProductDetail } from './pages/product-detail/product-detail';
+import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
+import { Cart } from './pages/cart/cart';
+import { Admin } from './pages/admin/admin';
+import { Profile } from './pages/profile/profile';
 
 export const routes: Routes = [
     {
@@ -20,10 +27,58 @@ export const routes: Routes = [
         component: Register,
         title: 'Register',
     },
+    {
+        path: 'product',
+        component: Product,
+        title: 'Product',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'product/:id',
+        component: ProductDetail,
+        title: 'Product Detail',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'cart',
+        component: Cart,
+        title: 'Cart',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'profile',
+        component: Profile,
+        title: 'My Profile',
+        canActivate: [authGuard]
+    },
+    {
+        path: 'admin',
+        component: Admin,
+        title: 'Admin Panel',
+        canActivate: [authGuard, adminGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'user',
+                pathMatch: 'full'
+            },
+            {
+                path: 'user',
+                loadComponent: () => import('./pages/admin/admin-user/admin-user').then(m => m.AdminUser),
+                title: 'Admin - Users'
+            },
+            {
+                path: 'product',
+                loadComponent: () => import('./pages/admin/admin-product/admin-product').then(m => m.AdminProduct),
+                title: 'Admin - Products'
+            }
+        ]
+    }
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule],
+
 })
 export class AppRoutingModule { }

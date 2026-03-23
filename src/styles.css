@@ -1,2 +1,79 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@layer components {
+  /* 
+   * GLOBAL BUTTONS 
+   * Unified sizes preventing large variations 
+   */
+  .btn {
+    @apply inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 active:scale-95 cursor-pointer outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  /* Sizes */
+  .btn-sm { @apply px-4 py-2 text-sm; }
+  .btn-md { @apply w-full px-5 py-3 text-base; }
+  .btn-lg { @apply px-8 py-4 text-base md:text-lg; }
+  .btn-fluid { @apply w-full px-5 py-3 text-base; }
+  
+  /* Variants */
+  .btn-primary {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-200 focus:ring-indigo-500;
+  }
+  .btn-secondary {
+    @apply bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 focus:ring-gray-300;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 shadow-md shadow-red-200 focus:ring-red-500;
+  }
+  .btn-success {
+    @apply bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-200 focus:ring-emerald-500;
+  }
+
+  /* 
+   * GLOBAL INPUTS 
+   */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 outline-none;
+  }
+  .input-label {
+    @apply block text-sm font-semibold text-gray-700 mb-1.5;
+  }
+
+  /* 
+   * GLOBAL MODALS 
+   */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm pointer-events-auto transition-opacity;
+  }
+  .modal-content {
+    @apply bg-white rounded-3xl shadow-2xl w-[95%] sm:w-full max-w-lg overflow-hidden transition-all duration-200 flex flex-col max-h-[90vh];
+  }
+  .modal-header {
+    @apply p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0;
+  }
+  .modal-body {
+    @apply p-6 space-y-4 overflow-y-auto;
+  }
+  .modal-footer {
+    @apply p-6 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0;
+  }
+
+  /* 
+   * GLOBAL IMAGES 
+   */
+  .img-card {
+    @apply w-full h-48 sm:h-56 object-cover;
+  }
+  .img-hero {
+    @apply w-full h-80 rounded-2xl object-cover shadow-md border border-gray-200;
+  }
+  .img-thumbnail {
+    @apply h-12 w-12 rounded-xl object-cover shadow-sm border border-gray-100;
+  }
+  .img-cart {
+    @apply h-24 w-24 rounded-2xl object-cover shrink-0;
+  }
+  .img-avatar {
+    @apply h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-white shadow-sm;
+  }
+}

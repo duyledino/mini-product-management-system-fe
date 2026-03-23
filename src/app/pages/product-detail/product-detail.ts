@@ -1,0 +1,199 @@
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ProductStore } from '../../core/state/product-store';
+import { ToastrService } from 'ngx-toastr';
+import { ProductDetail as ProductDetailModel, ProductVersion } from '../../core/models/product/product';
+import { CommonModule } from '@angular/common';
+import { AuthStore } from '../../core/state/auth-store';
+import { ProductModal } from '../../components/product-modal/product-modal';
+import { AddToCart } from "../../components/add-to-cart/add-to-cart";
+import { CloudinaryApi } from '../../core/services/cloudinary-api';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-product-detail',
+  imports: [CommonModule, RouterLink, ProductModal, AddToCart, FormsModule],
+  standalone:true,
+  templateUrl: './product-detail.html',
+  styleUrl: './product-detail.css',
+})
+export class ProductDetail implements OnInit {
+  private route = inject(ActivatedRoute);
+  private productStore = inject(ProductStore);
+  private toastr = inject(ToastrService);
+  private cloudinaryApi = inject(CloudinaryApi);
+  public productDetail= signal<ProductDetailModel|null>(null);
+ public selectedVersion = signal<ProductVersion | null>(null);
+ public authStore = inject(AuthStore);
+ public isModalOpen = signal(false);
+ private router = inject(Router);
+ stockQuantity = computed(()=>this.productStore.productDetail()?.stockQuantity);
+  ngOnInit(): void {
+    this.productStore.loadProductDetail(this.route.snapshot.params['id']).subscribe({
+      next: (response) => {
+        console.log("response: ",response);
+        this.productDetail.set(response.data);
+        this.selectVersion(response.data.productVersionList[0]);
+      },
+      error: (error) => {
+        console.log("error: ",error);
+        this.productStore.loadProductDetail(this.route.snapshot.params['id']);
+        // this.toastr.error(error.error.error);
+      }
+    });
+  }
+  openModal() {
+    this.isModalOpen.set(true);
+  }
+  deleteProduct() {
+    this.productStore.deleteProduct(this.productDetail()?.id!).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message);
+        this.router.navigate(['/product']);
+      },
+      error: (error) => {
+        console.log("error: ",error);
+        this.toastr.error(error.error.error);
+      }
+    });
+  }
+  private extractPublicId(url: string): string {
+    const parts = url.split('/');
+    const lastPart = parts.pop() || '';
+    const folder = parts.pop() || '';
+    const filename = lastPart.split('.')[0];
+    return `${folder}/${filename}`;
+  }
+
+  handleSave(formData: any) {    
+    console.log("formData in product-detail: ",formData);
+    const { id, public: isPublic, file, originalImageUrl, ...rest } = formData;
+    let payload = {
+      ...rest,
+      isPublic: isPublic ?? true,
+      imageUrl: originalImageUrl || ''
+    };
+
+    const submitProductForm = () => {
+      this.productStore.updateProduct(this.productDetail()?.id!, payload).subscribe({
+        next: (response) => {
+          this.router.navigate(['/product']);
+          this.toastr.success(response.message);
+        },
+        error: (error) => {
+          console.log("error: ",error);
+          this.toastr.error(error.error.error);
+        }
+      });
+      this.isModalOpen.set(false);
+    };
+
+    if (file) {
+      this.toastr.info('Uploading product image...', '', { timeOut: 2000 });
+      
+      const doUpload = () => {
+        this.cloudinaryApi.uploadImage(file).subscribe({
+          next: (response: any) => {
+            payload.imageUrl = response.secure_url;
+            submitProductForm();
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.toastr.error('Failed to upload new image. Product not updated.');
+            this.isModalOpen.set(false);
+          }
+        });
+      };
+
+      if (originalImageUrl && originalImageUrl.includes('cloudinary.com')) {
+        const oldPublicId = this.extractPublicId(originalImageUrl);
+        this.cloudinaryApi.destroyImage(oldPublicId).subscribe({
+          next: () => doUpload(),
+          error: (err: any) => {
+            console.log('Error destroying old image', err);
+            doUpload();
+          }
+        });
+      } else {
+        doUpload();
+      }
+    } else {
+      submitProductForm();
+    }
+  }
+  selectVersion(version: ProductVersion|null) {
+    if(version){
+      this.selectedVersion.set(version);
+    }
+  }
+  log(data: any): void {
+    console.log('Template Debug:', data);
+  }
+  public isVersionModalOpen = signal(false);
+  public versionForm = { name: '', description: '', price: 0 };
+
+  openVersionModal() {
+    this.versionForm = { name: '', description: '', price: this.productDetail()?.price || 0 };
+    this.isVersionModalOpen.set(true);
+  }
+
+  closeVersionModal() {
+    this.isVersionModalOpen.set(false);
+  }
+
+  saveVersion() {
+    const user = this.authStore.currentUser();
+    const userId = user?.userId || '';
+    const role = String(user?.roles?.[0] || '');
+
+    const requestPayload = {
+      name: this.versionForm.name,
+      description: this.versionForm.description,
+      price: this.versionForm.price
+    };
+
+    this.productStore.createProductVersion(this.productDetail()?.id!, requestPayload, userId, role).subscribe({
+      next: (response) => {
+        this.toastr.success(response.message || 'Version created successfully');
+        this.productStore.loadProductDetail(this.productDetail()?.id!).subscribe({
+           next: () => {
+             // Automatically refresh display visually
+             const product = this.productDetail();
+             if (product && product.productVersionList) {
+               this.selectVersion(product.productVersionList[0]);
+             }
+           }
+        });
+        this.closeVersionModal();
+      },
+      error: (error) => {
+        console.log(error);
+        this.toastr.error(error.error?.message || 'Failed to create product version');
+      }
+    });
+  }
+
+  // Inside your ProductDetail class
+  isAdmin = computed(() => {
+    const user = this.authStore.currentUser();
+    // DEBUG: This will log every time the user state changes
+    console.log('Checking Admin Status for:', user);
+    
+    if (!user || !user.roles) return false;
+    
+    // Use toUpperCase() to avoid case-sensitivity bugs
+    return user.roles.some((r: any) => String(r).toUpperCase() === 'ADMIN');
+  });
+
+  isOwnerManager = computed(() => {
+    const user = this.authStore.currentUser();
+    const product = this.productDetail();
+    
+    if (!user || !product) return false;
+    
+    const isManager = user.roles.some((r: any) => String(r).toUpperCase() === 'MANAGER');
+    const isOwner = user.userId === product.ownerId;
+    
+    return isManager && isOwner;
+  });
+}

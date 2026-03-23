@@ -2,25 +2,72 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       
-      <div class="flex-shrink-0">
+      <div class="shrink-0">
         <a routerLink="/" class="text-xl font-bold tracking-wider hover:text-indigo-200 transition-colors">
           MiniPMS 🚀
         </a>
       </div>
 
-      <div class="flex space-x-2 sm:space-x-4">
+      <div class="flex items-center space-x-2 sm:space-x-4">
         <a routerLink="/" 
            class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
            Home
         </a>
-        <a routerLink="/login" 
+
+        @if(authStore.isAuthenticated()){
+          <a routerLink="/product" 
+           class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
+           Product
+          </a>
+
+          <a routerLink="/cart" 
+             class="block relative px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
+             🛒 Cart
+              @if (cartCount() > 0) {
+                <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">{{ cartCount() }}</span>
+              }
+          </a>
+
+          @if (isAdmin()) {
+            <a routerLink="/admin" 
+               class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
+               🛡️ Admin
+            </a>
+          }
+
+          <!-- Avatar Dropdown -->
+          <div class="relative group ml-3 cursor-pointer">
+            <div class="flex items-center text-sm rounded-full focus:outline-none transition duration-150 ease-in-out">
+              @if (authStore.currentUser()?.avatar) {
+                <img class="h-8 w-8 rounded-full object-cover border-2 border-transparent group-hover:border-indigo-200 transition-colors" [src]="authStore.currentUser()?.avatar" alt="Avatar">
+              } @else {
+                <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold border-2 border-transparent group-hover:border-indigo-200 transition-colors">
+                  {{ authStore.currentUser()?.name?.charAt(0)?.toUpperCase() || 'U' }}
+                </div>
+              }
+            </div>
+            
+            <div class="origin-top-right absolute right-0 pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div class="py-1 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                <div class="px-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+                  Signed in as<br>
+                  <span class="font-medium text-gray-900 truncate block">{{ authStore.currentUser()?.name || authStore.currentUser()?.username }}</span>
+                </div>
+                <a routerLink="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors" role="menuitem">👤 Profile</a>
+                <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors" role="menuitem">🚪 Logout</button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <a routerLink="/login" 
            class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 transition-colors">
            Login
-        </a>
-        <a routerLink="/register" 
-           class="px-3 py-2 rounded-md text-sm font-medium bg-white text-indigo-600 hover:bg-gray-100 transition-colors">
-           Sign Up
-        </a>
+          </a>
+          <a routerLink="/register" 
+             class="btn btn-secondary btn-sm text-indigo-600! border-none">
+             Sign Up
+          </a>
+        }
       </div>
 
     </div>

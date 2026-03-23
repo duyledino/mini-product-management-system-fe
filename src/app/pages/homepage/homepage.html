@@ -1,1 +1,112 @@
-<p>homepage works!</p>
+<div class="min-h-screen bg-gray-50 flex flex-col font-sans overflow-hidden">
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+      <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 blur-3xl opacity-50 mix-blend-multiply animate-pulse"></div>
+      <div class="absolute top-40 -left-20 w-72 h-72 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 blur-3xl opacity-50 mix-blend-multiply animate-pulse" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-20 left-1/3 w-80 h-80 rounded-full bg-gradient-to-r from-yellow-300 to-orange-400 blur-3xl opacity-50 mix-blend-multiply animate-pulse" style="animation-delay: 4s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-8">
+        Welcome to the <br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-gradient-x">
+          Next-Gen Platform
+        </span>
+      </h1>
+      <p class="mt-4 max-w-2xl text-xl text-gray-600 mx-auto mb-10 leading-relaxed">
+        Experience a vibrant, colorful, and completely dynamic way to manage your work. Everything you need, brought to life with stunning visuals and smooth interactions.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a [routerLink]="userStore.isAuthenticated()? '/product' : '/login'" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-full hover:from-purple-500 hover:to-pink-500 transition-all duration-300 shadow-lg hover:shadow-pink-500/30 hover:-translate-y-1">
+          Get Started Now
+          <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </a>
+        @if (!userStore.isAuthenticated()) {
+          <a routerLink="/register" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1">
+          Register
+        </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 bg-white/60 backdrop-blur-xl border-t border-gray-100 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">We combine powerful features with beautiful aesthetics to give you the best experience possible.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Card 1 -->
+        <div class="group relative bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-100 transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30 transform group-hover:scale-110 transition-transform duration-500 text-3xl">
+              ⚡
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
+            <p class="text-gray-600 leading-relaxed">Optimized for speed and built with the latest technologies so you never have to wait.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="group relative bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-purple-500/20 border border-gray-100 transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30 transform group-hover:scale-110 transition-transform duration-500 text-3xl">
+              🎨
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Beautiful Design</h3>
+            <p class="text-gray-600 leading-relaxed">Aesthetically pleasing gradients, smooth animations, and a modern, vibrant interface.</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="group relative bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-orange-500/20 border border-gray-100 transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-yellow-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative z-10">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30 transform group-hover:scale-110 transition-transform duration-500 text-3xl">
+              🛡️
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Highly Secure</h3>
+            <p class="text-gray-600 leading-relaxed">Your data is safe with us. We use industry-standard encryption and security practices.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info/Stats Section -->
+  <section class="py-20 relative overflow-hidden bg-gray-900">
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-0 -left-1/4 w-1/2 h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transform -skew-x-12"></div>
+      <div class="absolute top-0 -right-1/4 w-1/2 h-full bg-gradient-to-l from-green-400 via-cyan-500 to-blue-500 transform skew-x-12"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="p-6">
+          <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-orange-400 mb-2">10k+</div>
+          <div class="text-gray-300 font-medium tracking-wider uppercase text-sm">Happy Users</div>
+        </div>
+        <div class="p-6">
+          <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-500 mb-2">99%</div>
+          <div class="text-gray-300 font-medium tracking-wider uppercase text-sm">Uptime</div>
+        </div>
+        <div class="p-6">
+          <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-indigo-500 mb-2">24/7</div>
+          <div class="text-gray-300 font-medium tracking-wider uppercase text-sm">Support</div>
+        </div>
+        <div class="p-6">
+          <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-emerald-500 mb-2">50+</div>
+          <div class="text-gray-300 font-medium tracking-wider uppercase text-sm">Features</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,246 @@
+<div class="bg-white min-h-screen">
+  <div class="mx-auto max-w-4xl px-4 py-16">
+
+    <!-- Loading -->
+    @if (profileStore.isLoading()) {
+      <div class="flex justify-center items-center h-64">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    }
+
+    @if (!profileStore.isLoading() && profileStore.profile()) {
+      @let p = profileStore.profile()!;
+
+      <!-- Profile Header Card -->
+      <div class="relative overflow-hidden rounded-2xl bg-linear-to-r from-indigo-600 to-indigo-800 shadow-xl mb-8">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+          <svg class="h-full w-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.5" fill="white"/>
+              </pattern>
+            </defs>
+            <rect fill="url(#dots)" width="400" height="400"/>
+          </svg>
+        </div>
+
+        <div class="relative px-8 py-10 flex flex-col sm:flex-row items-center gap-6">
+          <!-- Avatar -->
+          <div class="shrink-0 relative hover:opacity-80 transition-opacity duration-200 group">
+            <input type="file" [disabled]="isUploading()" [ngClass]="isUploading()?'':'cursor-pointer'" class="block w-full h-full absolute z-10 opacity-0" (change)="onFileSelected($event.target.files![0])" />
+            <div class="relative">
+              <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
+              @if (p.avatar) {
+                <img class="h-28 w-28 rounded-full object-cover ring-4 ring-white/30 shadow-lg" [src]="urlPreview ? urlPreview : p.avatar" alt="Profile avatar">
+              } @else {
+                @if(urlPreview){
+                  <img class="h-28 w-28 rounded-full object-cover ring-4 ring-white/30 shadow-lg" [src]="urlPreview" alt="Profile avatar">
+                } @else {
+                  <div class="h-28 w-28 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-4 ring-white/30">
+                    <span class="text-white text-4xl font-bold">{{ p.name.charAt(0).toUpperCase() }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Name & Username -->
+          <div class="text-center sm:text-left">
+            <h1 class="text-3xl font-bold text-white">{{ p.name }}</h1>
+            <p class="text-indigo-200 mt-1 text-lg">&#64;{{ p.username }}</p>
+            <div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-3">
+              @for (role of p.roles; track role) {
+                @if ($any(role) === 'ADMIN' || $any(role) === 'admin') {
+                  <span class="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 ring-inset">
+                    🛡️ ADMIN
+                  </span>
+                } @else if ($any(role) === 'MANAGER' || $any(role) === 'manager') {
+                  <span class="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 ring-inset">
+                    📋 MANAGER
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 ring-inset">
+                    👤 CUSTOMER
+                  </span>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Status Badge -->
+          <div class="sm:ml-auto">
+            @if (p.active) {
+              <span class="inline-flex items-center rounded-full bg-green-400/20 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-green-100 ring-1 ring-green-300/30 ring-inset">
+                <span class="mr-2 h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+                Active
+              </span>
+            } @else {
+              <span class="inline-flex items-center rounded-full bg-red-400/20 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-red-100 ring-1 ring-red-300/30 ring-inset">
+                <span class="mr-2 h-2 w-2 rounded-full bg-red-400"></span>
+                Inactive
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Details Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Personal Information Card -->
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="h-8 w-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+              <svg class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900">Personal Information</h3>
+          </div>
+
+          <div class="space-y-5">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+              <span class="text-sm text-gray-500">Full Name</span>
+              <span class="text-sm font-semibold text-gray-900">{{ p.name }}</span>
+            </div>
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+              <span class="text-sm text-gray-500">Username</span>
+              <span class="text-sm font-semibold text-gray-900">&#64;{{ p.username }}</span>
+            </div>
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+              <span class="text-sm text-gray-500">Age</span>
+              <span class="text-sm font-semibold text-gray-900">{{ p.age }} years old</span>
+            </div>
+            <div class="flex items-center justify-between py-3">
+              <span class="text-sm text-gray-500">User ID</span>
+              <span class="text-xs font-mono text-gray-400 bg-gray-50 px-2 py-1 rounded">{{ p.userId }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Details Card -->
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="h-8 w-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+              <svg class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900">Account Details</h3>
+          </div>
+
+          <div class="space-y-5">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+              <span class="text-sm text-gray-500">Account Status</span>
+              @if (p.active) {
+                <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
+                  <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                  Active
+                </span>
+              } @else {
+                <span class="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/20 ring-inset">
+                  <span class="mr-1.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                  Inactive
+                </span>
+              }
+            </div>
+            <div class="py-3 border-b border-gray-100">
+              <span class="text-sm text-gray-500 block mb-2">Roles</span>
+              <div class="flex flex-wrap gap-2">
+                @for (role of p.roles; track role) {
+                  @if ($any(role) === 'ADMIN' || $any(role) === 'admin') {
+                    <span class="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 ring-1 ring-purple-600/20 ring-inset">
+                      ADMIN
+                    </span>
+                  } @else if ($any(role) === 'MANAGER' || $any(role) === 'manager') {
+                    <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-600/20 ring-inset">
+                      MANAGER
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-600/20 ring-inset">
+                      CUSTOMER
+                    </span>
+                  }
+                }
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-3">
+              <span class="text-sm text-gray-500">Avatar URL</span>
+              @if (p.avatar) {
+                <span class="text-xs text-indigo-600 font-medium truncate max-w-[200px]">{{ p.avatar }}</span>
+              } @else {
+                <span class="text-xs text-gray-400 italic">Not set</span>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Edit Profile Section -->
+      <div class="mt-8 rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="h-8 w-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+            <svg class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Edit Profile</h3>
+        </div>
+
+        <form (ngSubmit)="onUpdateProfile()" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="flex flex-col space-y-2">
+              <label for="edit-name" class="input-label">Full Name</label>
+              <input type="text" id="edit-name"
+                     [(ngModel)]="editName" name="editName"
+                     placeholder="Enter your name"
+                     class="input-field">
+            </div>
+            <div class="flex flex-col space-y-2">
+              <label for="edit-age" class="input-label">Age</label>
+              <input type="number" id="edit-age"
+                     [(ngModel)]="editAge" name="editAge"
+                     placeholder="Enter your age"
+                     class="input-field">
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <label for="edit-avatar" class="input-label">Avatar URL</label>
+            <input type="text" id="edit-avatar"
+            disabled="true"
+                   [(ngModel)]="editAvatar" name="editAvatar"
+                   placeholder="https://example.com/avatar.jpg"
+                   class="input-field disabled:bg-gray-50">
+          </div>
+          <div class="flex justify-end pt-4">
+            <button type="submit"
+                    class="btn btn-primary btn-md sm:w-auto w-full flex items-center gap-2 justify-center">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- No Profile State -->
+    @if (!profileStore.isLoading() && !profileStore.profile()) {
+      <div class="text-center py-16">
+        <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+        <h3 class="mt-4 text-sm font-semibold text-gray-900">Profile not found</h3>
+        <p class="mt-1 text-sm text-gray-500">Unable to load your profile. Please try again later.</p>
+      </div>
+    }
+
+  </div>
+</div>

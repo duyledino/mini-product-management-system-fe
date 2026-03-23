@@ -1,0 +1,75 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+    
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+      <h3 class="text-2xl font-bold text-gray-900">
+        {{ product ? 'Update Product' : 'Create New Product' }}
+      </h3>
+      <button (click)="close.emit()" class="text-gray-400 hover:text-gray-600 cursor-pointer text-2xl">&times;</button>
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+      <div>
+        <label class="input-label">Product Name</label>
+        <input formControlName="name" type="text" class="input-field">
+      </div>
+
+      <!-- Image Uploader -->
+      <label class="input-label">Product Image</label>
+      <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 relative group bg-gray-50/50">
+        <input type="file" [disabled]="isUploading()" [ngClass]="isUploading()?'':'cursor-pointer'" class="absolute inset-0 w-full h-full opacity-0 z-10" (change)="onFileSelected($any($event.target).files[0])" accept="image/*">
+        <div class="text-center">
+          @if (urlPreview) {
+            <img [src]="urlPreview" class="mx-auto h-32 w-32 object-cover rounded-md shadow-sm mb-4 ring-2 ring-indigo-500/20" alt="Preview">
+          } @else {
+            <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+            </svg>
+          }
+          <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+            <span class="relative rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+              {{ urlPreview ? 'Change product image' : 'Upload a product image' }}
+            </span>
+          </div>
+          <p class="text-xs leading-5 text-gray-500">PNG, JPG, GIF up to 10MB</p>
+        </div>
+        @if (isUploading()) {
+          <div class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center rounded-lg z-20">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          </div>
+        }
+      </div>
+
+      <div>
+        <label class="input-label">Description</label>
+        <textarea formControlName="description" rows="3" class="input-field"></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="input-label">Price ($)</label>
+          <input formControlName="price" type="number" class="input-field">
+        </div>
+        <div class="flex items-end pb-2">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" formControlName="public" class="w-5 h-5 text-indigo-600 rounded">
+            <span class="ml-2 text-sm font-medium text-gray-700">Make Public</span>
+          </label>
+        </div>
+        <div>
+        <label class="input-label">Stock Quantity</label>
+        <input formControlName="stockQuantity" type="number" class="input-field">
+      </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button type="button" (click)="close.emit()" class="btn btn-secondary flex-1">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="productForm.invalid" class="btn btn-primary flex-1 disabled:pointer-events-none">
+          {{ product ? 'Save Changes' : 'Create Product' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

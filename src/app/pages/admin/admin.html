@@ -1,0 +1,33 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+      <div class="px-6 py-5 border-b border-gray-100 bg-white sm:flex sm:items-center sm:justify-between">
+        <h3 class="text-xl leading-6 font-bold text-gray-900">
+          Admin Dashboard
+        </h3>
+      </div>
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8 px-6 bg-gray-50/50" aria-label="Tabs">
+          <a routerLink="/admin/user"
+             routerLinkActive="border-indigo-500 text-indigo-600 bg-white"
+             [routerLinkActiveOptions]="{exact: false}"
+             class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm transition-colors rounded-t-lg">
+            Manage Users
+          </a>
+          
+          <a routerLink="/admin/product"
+             routerLinkActive="border-indigo-500 text-indigo-600 bg-white"
+             [routerLinkActiveOptions]="{exact: false}"
+             class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm transition-colors rounded-t-lg">
+            Manage Products
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- The active child route is rendered here -->
+    <div class="rounded-xl">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
