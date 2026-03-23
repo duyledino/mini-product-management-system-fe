@@ -10,6 +10,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authStore = inject(AuthApi);
   const toastr = inject(ToastrService);
   const router = inject(Router);
+  if(req.url.includes('cloudinary.com')){
+    return next(req);
+  }
   const authReq = token
     ? req.clone({
         setHeaders: {

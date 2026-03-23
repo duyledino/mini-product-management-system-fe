@@ -19,6 +19,11 @@ export class AuthApi {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.API_URL}/login`, user);
   }
 
+  logout(){
+    console.log('logout');
+    return this.http.post<ApiResponse<void>>(`${this.API_URL}/logout`, {}); // never run ??
+  }
+
   refreshToken(refreshToken: string){
     return this.http.post<ApiResponse<LoginResponse>>(`${this.API_URL}/refresh`, {refreshToken});
   }

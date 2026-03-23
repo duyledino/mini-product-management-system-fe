@@ -38,6 +38,7 @@ export class AuthStore {
     );
   }
 
+
   // --- 3. ACTIONS (Like Redux Thunks/Reducers) ---
   login(credentials: any) {
     this.isLoading.set(true); // Turn on loading spinner
@@ -110,5 +111,16 @@ export class AuthStore {
 
   logout() {
     this.currentUser.set(null);
+    return this.authApi.logout().pipe(tap({
+      next: (response) => {
+        this.isLoading.set(false);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        this.currentUser.set(null);
+      },
+      error: (error: any) => {
+        this.isLoading.set(false);
+      }
+    }))
   }
 }
