@@ -5,11 +5,11 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-6">
     
     <div class="flex flex-col space-y-2">
-      <label for="reg-name" class="text-sm font-semibold text-gray-700">Username</label>
+      <label for="reg-name" class="input-label">Username</label>
       <input type="text" id="reg-name" formControlName="username" placeholder="Enter your username" 
-             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             class="input-field"
              [class.border-red-500]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-             [class.border-gray-300]="!(registerForm.get('username')?.invalid && registerForm.get('username')?.touched)">
+             [class.focus:ring-red-500]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
              
       @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
         <span class="text-red-500 text-xs font-medium">Username is required.</span>
@@ -17,11 +17,11 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="reg-password" class="text-sm font-semibold text-gray-700">Password</label>
+      <label for="reg-password" class="input-label">Password</label>
       <input type="password" id="reg-password" formControlName="password" placeholder="Create a password" 
-             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             class="input-field"
              [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-             [class.border-gray-300]="!(registerForm.get('password')?.invalid && registerForm.get('password')?.touched)">
+             [class.focus:ring-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
              
       @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
         <div class="text-red-500 text-xs font-medium flex flex-col">
@@ -36,11 +36,11 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="reg-confirm" class="text-sm font-semibold text-gray-700">Confirm Password</label>
+      <label for="reg-confirm" class="input-label">Confirm Password</label>
       <input type="password" id="reg-confirm" formControlName="confirmPassword" placeholder="Confirm your password" 
-             class="px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+             class="input-field"
              [class.border-red-500]="(registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched"
-             [class.border-gray-300]="!((registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched)">
+             [class.focus:ring-red-500]="(registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched">
              
       @if (registerForm.get('confirmPassword')?.touched) {
         <div class="text-red-500 text-xs font-medium flex flex-col">
@@ -54,8 +54,7 @@
       }
     </div>
 
-    <button type="submit" 
-            class="w-full py-3 hover:cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors mt-2">
+    <button type="submit" class="btn btn-primary btn-md mt-2">
       Sign Up
     </button>
   </form>

@@ -3,18 +3,20 @@
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">Customers also purchased</h2>
 @if (isAdminOrManager()) {
-      <button (click)="isModalOpen.set(true)" class="w-[200px] cursor-pointer bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+      <button (click)="isModalOpen.set(true)" class="btn btn-primary btn-md w-[200px]">
         Create Product
       </button>
     }
     </div>
 
     <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-  
-      @for (item of products; track item.id) {
-        <app-product-item [product]="item"></app-product-item>
-      }
-
+      @if (products.length == 0) {
+        <p class="text-center text-gray-500 col-span-4">No products found</p>
+      }@else {
+        @for (item of products; track item.id) {
+          <app-product-item [product]="item"></app-product-item>
+        }
+      } 
     </div>
     
     @if (isLoading()) {

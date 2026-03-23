@@ -1,15 +1,16 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { CartStore } from '../../core/state/cart-store';
 import { ToastrService } from 'ngx-toastr';
-import {Cart as CartModel} from '../../core/models/cart/cart';
 import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-cart',
-  imports: [RouterLink],
+  imports: [RouterLink, NgClass],
   standalone: true,
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
+
 export class Cart implements OnInit {
   private cartStore = inject(CartStore);
   private toast = inject(ToastrService);
@@ -28,12 +29,13 @@ export class Cart implements OnInit {
       }
     });
   }
-
   totalAmount = computed(() => {
     console.log(this.cart());
-    return this.cartStore.cart()?.items.reduce((total, item) => total + item.totalPrice, 0) || 0;
+    return this.cartStore.cart()?.totalAmount;
   });
-
+  log(){
+    console.log(this.cart());
+  }
   removeFromCart(cartItemId: string){
     this.cartStore.removeFromCart(cartItemId).subscribe({
       next: () => {

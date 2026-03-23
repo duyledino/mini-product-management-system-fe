@@ -2,7 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { ProductApi } from '../services/product-api';
 import { ProductItem } from '../../components/product-item/product-item';
 import { tap } from 'rxjs';
-import { createProductRequest, ProductDetail, ProductPublic, updateProductRequest } from '../models/product/product';
+import { createProductRequest, ProductDetail, ProductPublic, updateProductRequest, adminProduct, CreateVersionRequest } from '../models/product/product';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -29,6 +29,23 @@ export class ProductStore {
       }
     }));
   }
+
+  public adminProducts = signal<adminProduct[]>([]);
+  public isLoadingAdminProducts = signal<boolean>(false);
+
+  loadAdminProducts(){
+    this.isLoadingAdminProducts.set(true);
+    return this.productApi.getAllProducts().pipe(tap({
+      next: (response) => {
+        this.adminProducts.set(response.data);
+        this.isLoadingAdminProducts.set(false);
+      },
+      error: (error) => {
+        this.isLoadingAdminProducts.set(false);
+      }
+    }));
+  }
+
   loadProducts(){
     this.isLoading.set(true);
     return this.productApi.getProducts().pipe(tap({
@@ -72,6 +89,18 @@ export class ProductStore {
       },
       error: (error) => {
         this.isLoadingDelete.set(false);
+      }
+    }));
+  }
+
+  createProductVersion(productId: string, request: CreateVersionRequest, userId: string, role: string) {
+    this.isLoadingCreate.set(true);
+    return this.productApi.createProductVersion(productId, request, userId, role).pipe(tap({
+      next: (response) => {
+        this.isLoadingCreate.set(false);
+      },
+      error: (error) => {
+        this.isLoadingCreate.set(false);
       }
     }));
   }

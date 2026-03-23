@@ -55,7 +55,24 @@ export const routes: Routes = [
         path: 'admin',
         component: Admin,
         title: 'Admin Panel',
-        canActivate: [authGuard, adminGuard]
+        canActivate: [authGuard, adminGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'user',
+                pathMatch: 'full'
+            },
+            {
+                path: 'user',
+                loadComponent: () => import('./pages/admin/admin-user/admin-user').then(m => m.AdminUser),
+                title: 'Admin - Users'
+            },
+            {
+                path: 'product',
+                loadComponent: () => import('./pages/admin/admin-product/admin-product').then(m => m.AdminProduct),
+                title: 'Admin - Products'
+            }
+        ]
     }
 ];
 

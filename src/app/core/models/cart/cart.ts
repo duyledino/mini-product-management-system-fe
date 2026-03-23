@@ -12,4 +12,5 @@ export interface CartItem{
     quantity: number;
     price: number;
     totalPrice: number;
+    public: boolean;
 }
