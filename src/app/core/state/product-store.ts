@@ -58,7 +58,7 @@ export class ProductStore {
       }
     }));
   }
-  updateProduct(id: string, product: updateProductRequest){
+  updateProduct(id: string, product: FormData){
     this.isLoadingUpdate.set(true);
     return this.productApi.updateProduct(id,product).pipe(tap({
       next: (response) => {
@@ -69,7 +69,7 @@ export class ProductStore {
       }
     }));
   }
-  createProduct(product: createProductRequest){
+  createProduct(product: FormData){
     console.log("product: ",product);
     this.isLoadingCreate.set(true);
     return this.productApi.createProduct(product).pipe(tap({

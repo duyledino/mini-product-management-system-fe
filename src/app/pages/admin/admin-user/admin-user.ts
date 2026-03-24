@@ -39,6 +39,14 @@ export class AdminUser implements OnInit {
     return this.allRoles.filter((role) => !currentRoles.includes(role));
   }
 
+  getSortedRoles(roles: any[] | undefined): string[] {
+    if (!roles) return [];
+    
+    return [...roles]
+      .map((r) => (typeof r === 'string' ? r : r.role).toUpperCase())
+      .sort((a, b) => this.allRoles.indexOf(a) - this.allRoles.indexOf(b));
+  }
+
   onAddRole(userId: string, newRole: string) {
     if (newRole) {
       this.adminStore.assignRole(userId, newRole).subscribe();

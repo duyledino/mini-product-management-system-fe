@@ -47,6 +47,18 @@ export class Cart implements OnInit {
     });
   }
 
+  reduceFromCart(productId: string, quantity: number){
+    this.cartStore.reduceFromCart(productId, quantity).subscribe({
+      next: () => {
+        console.log(this.cartItem());
+        this.cartStore.loadCart().subscribe();
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
   addToCart(productId: string, quantity: number){
     this.cartStore.addToCart(productId, quantity).subscribe({
       next: () => {
