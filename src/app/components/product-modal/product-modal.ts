@@ -1,7 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { ProductDetail as ProductDetailModel, ProductPublic } from '../../core/models/product/product';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CloudinaryApi } from '../../core/services/cloudinary-api';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule, NgClass } from '@angular/common';
 
@@ -14,7 +13,6 @@ import { CommonModule, NgClass } from '@angular/common';
 })
 export class ProductModal {
   private fb = inject(FormBuilder);
-  private cloudinaryApi = inject(CloudinaryApi);
   private toastr = inject(ToastrService);
 
   @Input({required: true}) product:ProductDetailModel|null = null;
@@ -30,7 +28,7 @@ export class ProductModal {
     name: ['', [Validators.required]],
     description: ['', [Validators.required]],
     price: [0, [Validators.required, Validators.min(0)]],
-    public: [false],
+    isPublic: [false],
     stockQuantity: [0, [Validators.required, Validators.min(0)]]
   });
 
@@ -43,7 +41,7 @@ export class ProductModal {
       name: this.product?.name,
       description: this.product?.description,
       price: this.product?.price,
-      public: this.product?.public,
+      isPublic: this.product?.isPublic,
       stockQuantity: this.product?.stockQuantity
     });
   }
@@ -62,59 +60,21 @@ export class ProductModal {
     this.urlPreview = URL.createObjectURL(file);
   }
 
-  private extractPublicId(url: string): string {
-    const parts = url.split('/');
-    const lastPart = parts.pop() || '';
-    const folder = parts.pop() || '';
-    const filename = lastPart.split('.')[0];
-    return `${folder}/${filename}`;
-  }
-
   onSubmit() {
     if (this.productForm.valid) {
-      if (this.selectedFile) {
-        this.isUploading.set(true);
-
-        const uploadNewImage = () => {
-          this.cloudinaryApi.uploadImage(this.selectedFile!).subscribe({
-            next: (response: any) => {
-              this.isUploading.set(false);
-              this.emitSave(response.secure_url);
-            },
-            error: (error) => {
-              this.isUploading.set(false);
-              this.toastr.error('Failed to upload image. Form not saved.');
-            }
-          });
-        };
-
-        // If updating an existing product that already had a Cloudinary image, destroy it natively first.
-        if (this.product && this.originalImageUrl && this.originalImageUrl.includes('cloudinary.com')) {
-          const oldPublicId = this.extractPublicId(this.originalImageUrl);
-          this.cloudinaryApi.destroyImage(oldPublicId).subscribe({
-            next: () => uploadNewImage(),
-            error: (err) => {
-              console.log('Error destroying old image', err);
-              // continue uploading even if destroy fails, to not block the user
-              uploadNewImage();
-            }
-          });
-        } else {
-          // No previous image to destroy
-          uploadNewImage();
-        }
-      } else {
-        // No new file Selected. Just use the original image URL.
-        this.emitSave(this.originalImageUrl || '');
+      if (!this.product && !this.selectedFile) {
+        this.toastr.error('Please select an image');
+        return;
       }
-    }
-  }
+      const formData = new FormData();
+      formData.append('name', this.productForm.get('name')?.value || '');
+      formData.append('description', this.productForm.get('description')?.value || '');
+      formData.append('price', (this.productForm.get('price')?.value || 0).toString());
+      formData.append('stockQuantity', (this.productForm.get('stockQuantity')?.value || 0).toString());
+      formData.append('isPublic', (this.productForm.get('isPublic')?.value || false).toString());
+      formData.append('file', this.selectedFile!);
 
-  private emitSave(finalImageUrl: string) {
-    this.save.emit({
-      id: this.product?.id,
-      imageUrl: finalImageUrl,
-      ...this.productForm.value
-    });
+      this.save.emit(formData);
+    }
   }
 }

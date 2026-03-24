@@ -32,9 +32,9 @@
           <p class="mt-4 text-base text-gray-500 leading-relaxed">{{ stockQuantity() }}</p>
         </div>
         <div class="flex items-center space-x-2">
-          <span [class]="p.public ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+          <span [class]="p.isPublic ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
                 class="px-2 py-1 text-xs font-bold rounded-full uppercase">
-            {{ p.public ? 'Public' : 'Private' }}
+            {{ p.isPublic ? 'Public' : 'Private' }}
           </span>
         </div>
         {{log(authStore.currentUser())}}

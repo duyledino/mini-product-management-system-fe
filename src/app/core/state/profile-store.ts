@@ -28,7 +28,7 @@ export class ProfileStore {
     );
   }
 
-  updateProfile(request: UpdateProfileRequest) {
+  updateProfile(request: FormData) {
     this.isLoading.set(true);
     return this.profileApi.updateProfile(request).pipe(
       tap({

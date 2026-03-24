@@ -15,31 +15,31 @@
               <div 
                 class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-6 transition-all hover:shadow-md"
                 [ngClass]="{
-                  'border-red-500! border-2! bg-red-50!': !item.public
+                  'border-red-500! border-2! bg-red-50!': !item.isPublic
                 }"
               >
                 
                 <img src="https://ui-avatars.com/api/?name={{item.productName}}&background=EEF2FF&color=4F46E5" 
                      class="img-cart border border-gray-50 bg-gray-100">
-
+ 
                 <div class="flex flex-1 flex-col justify-between">
                   <div class="flex justify-between items-start">
                     <div>
-                      @if(!item.public) {
+                      @if(!item.isPublic) {
                         <p class="text-sm text-red-500 mt-1 font-bold">Deleted by admin</p>
                       }
                       <h3 class="text-lg font-bold text-gray-900">{{ item.productName }}</h3>
-
+ 
                       <p class="text-sm text-gray-500 mt-1">Unit Price: ${{ item.price }}</p>
                     </div>
                     <p class="text-xl font-black text-indigo-600">${{ item.totalPrice }}</p>
                   </div>
-
+ 
                   <div class="flex items-center justify-between mt-6">
                     <div class="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-200">
                       <button 
-                        (click)="addToCart(item.productId, -1)"
-                        [disabled]="item.quantity <= 1 || !item.public"
+                        (click)="reduceFromCart(item.productId, 1)"
+                        [disabled]="item.quantity <= 1 || !item.isPublic"
                         class="btn w-8 h-8 rounded-lg hover:bg-white hover:shadow-sm disabled:opacity-30 p-0 text-lg">
                         -
                       </button>
@@ -48,7 +48,7 @@
                       
                       <button 
                         (click)="addToCart(item.productId, 1) "
-                        [disabled]="!item.public"
+                        [disabled]="!item.isPublic"
                         class="btn w-8 h-8 rounded-lg hover:bg-white hover:shadow-sm p-0 text-lg disabled:opacity-30">
                         +
                       </button>

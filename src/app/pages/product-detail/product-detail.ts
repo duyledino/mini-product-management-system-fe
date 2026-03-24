@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
 import { AuthStore } from '../../core/state/auth-store';
 import { ProductModal } from '../../components/product-modal/product-modal';
 import { AddToCart } from "../../components/add-to-cart/add-to-cart";
-import { CloudinaryApi } from '../../core/services/cloudinary-api';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -21,7 +20,6 @@ export class ProductDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private productStore = inject(ProductStore);
   private toastr = inject(ToastrService);
-  private cloudinaryApi = inject(CloudinaryApi);
   public productDetail= signal<ProductDetailModel|null>(null);
  public selectedVersion = signal<ProductVersion | null>(null);
  public authStore = inject(AuthStore);
@@ -57,69 +55,19 @@ export class ProductDetail implements OnInit {
       }
     });
   }
-  private extractPublicId(url: string): string {
-    const parts = url.split('/');
-    const lastPart = parts.pop() || '';
-    const folder = parts.pop() || '';
-    const filename = lastPart.split('.')[0];
-    return `${folder}/${filename}`;
-  }
 
-  handleSave(formData: any) {    
-    console.log("formData in product-detail: ",formData);
-    const { id, public: isPublic, file, originalImageUrl, ...rest } = formData;
-    let payload = {
-      ...rest,
-      isPublic: isPublic ?? true,
-      imageUrl: originalImageUrl || ''
-    };
-
-    const submitProductForm = () => {
-      this.productStore.updateProduct(this.productDetail()?.id!, payload).subscribe({
-        next: (response) => {
-          this.router.navigate(['/product']);
-          this.toastr.success(response.message);
-        },
-        error: (error) => {
-          console.log("error: ",error);
-          this.toastr.error(error.error.error);
-        }
-      });
-      this.isModalOpen.set(false);
-    };
-
-    if (file) {
-      this.toastr.info('Uploading product image...', '', { timeOut: 2000 });
-      
-      const doUpload = () => {
-        this.cloudinaryApi.uploadImage(file).subscribe({
-          next: (response: any) => {
-            payload.imageUrl = response.secure_url;
-            submitProductForm();
-          },
-          error: (err: any) => {
-            console.log(err);
-            this.toastr.error('Failed to upload new image. Product not updated.');
-            this.isModalOpen.set(false);
-          }
-        });
-      };
-
-      if (originalImageUrl && originalImageUrl.includes('cloudinary.com')) {
-        const oldPublicId = this.extractPublicId(originalImageUrl);
-        this.cloudinaryApi.destroyImage(oldPublicId).subscribe({
-          next: () => doUpload(),
-          error: (err: any) => {
-            console.log('Error destroying old image', err);
-            doUpload();
-          }
-        });
-      } else {
-        doUpload();
+  handleSave(formData: FormData) {    
+    this.productStore.updateProduct(this.productDetail()?.id!, formData).subscribe({
+      next: (response) => {
+        this.router.navigate(['/product']);
+        this.toastr.success(response.message);
+      },
+      error: (error) => {
+        console.log("error: ",error);
+        this.toastr.error(error.error.error);
       }
-    } else {
-      submitProductForm();
-    }
+    });
+    this.isModalOpen.set(false);
   }
   selectVersion(version: ProductVersion|null) {
     if(version){

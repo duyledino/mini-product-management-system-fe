@@ -3,7 +3,7 @@ export interface ProductPublic {
     name: string;
     description: string;
     price: number;
-    public: boolean;
+    isPublic: boolean;
     imageUrl:string;
 
 }
@@ -23,7 +23,7 @@ export interface ProductDetail {
     imageUrl:string;
     stockQuantity: number;
     productVersionList: ProductVersion[]
-    public: boolean;
+    isPublic: boolean;
 }
 
 export interface updateProductRequest {
@@ -32,6 +32,7 @@ export interface updateProductRequest {
     price: number;
     stockQuantity: number;
     imageUrl:string;
+    isPublic: boolean;
 }
 
 export interface createProductRequest{
@@ -57,7 +58,7 @@ export interface adminProduct{
     description: string;
     price: number;
     stockQuantity: number;
-    public: boolean;
+    isPublic: boolean;
     isDeleted: boolean;
     ownerId: string;
     currentVersion: number;

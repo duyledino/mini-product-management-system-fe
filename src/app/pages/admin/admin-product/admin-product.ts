@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { createProductRequest } from '../../../core/models/product/product';
-import { CloudinaryApi } from '../../../core/services/cloudinary-api';
 import { AuthStore } from '../../../core/state/auth-store';
 
 @Component({
@@ -20,7 +19,6 @@ export class AdminProduct implements OnInit {
   public adminProducts = this.productStore.adminProducts;
   public isLoadingAdminProducts = this.productStore.isLoadingAdminProducts;
   private toastr = inject(ToastrService);
-  private cloudinaryApi = inject(CloudinaryApi);
 
   // UI State
   public expandedProducts: Set<string> = new Set();
@@ -84,15 +82,6 @@ export class AdminProduct implements OnInit {
     this.urlPreview = URL.createObjectURL(file);
   }
 
-  private extractPublicId(url: string): string {
-    const parts = url.split('/');
-    const lastPart = parts.pop() || '';
-    const folder = parts.pop() || '';
-    const filename = lastPart.split('.')[0];
-    return `${folder}/${filename}`;
-  }
-
-  
   openCreateProduct() {
     this.modalMode = 'CREATE';
     this.productForm = { name: '', description: '', price: 0, stockQuantity: 0, isPublic: false, imageUrl: '' };
@@ -110,7 +99,7 @@ export class AdminProduct implements OnInit {
       description: product.description, 
       price: product.price, 
       stockQuantity: product.stockQuantity, 
-      isPublic: product.public,
+      isPublic: product.isPublic,
       imageUrl: product.imageUrl || '' 
     };
     this.urlPreview = product.imageUrl || null;
@@ -127,52 +116,22 @@ export class AdminProduct implements OnInit {
   }
 
   saveProduct() {
-    if (this.selectedFile) {
-      this.isUploading.set(true);
-
-      const doUpload = () => {
-        this.cloudinaryApi.uploadImage(this.selectedFile!).subscribe({
-          next: (response: any) => {
-            this.productForm.imageUrl = response.secure_url;
-            this.isUploading.set(false);
-            this.submitProductForm();
-          },
-          error: (error) => {
-            this.isUploading.set(false);
-            this.toastr.error('Failed to upload image. Form not saved.');
-          }
-        });
-      };
-
-      if (this.modalMode === 'UPDATE' && this.originalImageUrl) {
-        const oldPublicId = this.extractPublicId(this.originalImageUrl);
-        this.cloudinaryApi.destroyImage(oldPublicId).subscribe({
-          next: () => doUpload(),
-          error: (err) => {
-            console.log('Error destroying old image', err);
-            doUpload(); // continue upload even if destroy fails
-          }
-        });
-      } else {
-        doUpload();
-      }
-    } else {
-      this.submitProductForm();
-    }
+    this.submitProductForm();
   }
 
   private submitProductForm() {
-    const payload: createProductRequest = {
-      name: this.productForm.name,
-      description: this.productForm.description,
-      price: this.productForm.price,
-      stockQuantity: this.productForm.stockQuantity,
-      isPublic: this.productForm.isPublic,
-      imageUrl: this.productForm.imageUrl
-    };
+    const formData = new FormData();
+    formData.append('name', this.productForm.name);
+    formData.append('description', this.productForm.description);
+    formData.append('price', this.productForm.price.toString());
+    formData.append('stockQuantity', this.productForm.stockQuantity.toString());
+    formData.append('isPublic', this.productForm.isPublic.toString());
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    } 
 
     if (this.modalMode === 'CREATE') {
-      this.productStore.createProduct(payload).subscribe({
+      this.productStore.createProduct(formData).subscribe({
         next: (response) => {
           this.toastr.success(response.message || 'Product created successfully');
           this.loadProducts();
@@ -180,11 +139,13 @@ export class AdminProduct implements OnInit {
         },
         error: (error) => {
           console.log(error)
-          this.toastr.error(error.message || 'Failed to create product');
+          this.toastr.error(error.error.error || 'Failed to create product');
         }
       });
     } else {
-      this.productStore.updateProduct(this.currentEditingProductId!, payload).subscribe({
+      console.log(this.currentEditingProductId, formData);
+      formData.append('imageUrl', this.productForm.imageUrl);
+      this.productStore.updateProduct(this.currentEditingProductId!, formData).subscribe({
         next: (response) => {
           this.toastr.success(response.message || 'Product updated successfully');
           this.loadProducts();
@@ -192,7 +153,7 @@ export class AdminProduct implements OnInit {
         },
         error: (error) => {
           console.log(error)
-          this.toastr.error(error.message || 'Failed to update product');
+          this.toastr.error(error.error.error || 'Failed to update product');
         }
       });
     }

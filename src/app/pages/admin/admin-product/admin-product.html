@@ -74,7 +74,7 @@
                 </td>
                 <!-- Status -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  @if (product.public) {
+                  @if (product.isPublic) {
                     <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                       Public
                     </span>
@@ -176,7 +176,7 @@
           <div class="space-y-4">
             <!-- Image Uploader -->
             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 relative group bg-gray-50/50">
-              <input type="file" [disabled]="isUploading()" [ngClass]="isUploading()?'':'cursor-pointer'" class="absolute inset-0 w-full h-full opacity-0 z-10" (change)="onFileSelected($any($event.target).files[0])" accept="image/*">
+              <input type="file" [disabled]="isUploading()" [ngClass]="isUploading()?'':'cursor-pointer'" class="absolute inset-0 w-full h-full opacity-0 z-10" required (change)="onFileSelected($any($event.target).files[0])" accept="image/*">
               <div class="text-center">
                 @if (urlPreview) {
                   <img [src]="urlPreview" class="mx-auto h-32 w-32 object-cover rounded-md shadow-sm mb-4 ring-2 ring-indigo-500/20" alt="Preview">

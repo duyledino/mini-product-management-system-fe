@@ -21,4 +21,8 @@ export class CartApi {
   removeFromCart(itemId: string) {
     return this.http.delete<ApiResponse<CartItem>>(`${this.baseUrl}/items/${itemId}`);
   }
+
+  reduceFromCart(productId: string,quantity: number) {
+    return this.http.post<ApiResponse<CartItem>>(`${this.baseUrl}/items/reduce`, { productId, quantity });
+  }
 }

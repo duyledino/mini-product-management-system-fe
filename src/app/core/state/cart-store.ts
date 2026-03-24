@@ -77,7 +77,7 @@ export class CartStore {
           if(!pd) return null;
           return {
             ...pd,
-            stockQuantity: pd!.stockQuantity - quantity,
+            stockQuantity: pd!.stockQuantity > 0 ? pd!.stockQuantity - quantity : 0,
           }
         })
         
@@ -90,5 +90,44 @@ export class CartStore {
       },
     }));
   }
-
+  reduceFromCart(productId: string, quantity: number){
+    this.isLoading.set(true);
+    return this.cartApi.reduceFromCart(productId, quantity).pipe(tap({
+      next: (response) => {
+        this.cartItem.set(response.data);
+        this.cart.update((cart) => {
+          if (!cart) return null;
+          const existingItem = cart.items.find(item => item.productId === productId);
+          if (existingItem) {
+            return {
+              ...cart,
+              items: cart.items.map((item) =>
+                item.productId === productId
+                  ? { ...item, quantity: item.quantity - quantity }
+                  : item
+              ),
+            };
+          }
+          return {
+            ...cart,
+            items: [...cart.items, response.data],
+          };
+        });
+        this.productStore.productDetail.update((pd)=>{
+          if(!pd) return null;
+          return {
+            ...pd,
+            stockQuantity: pd!.stockQuantity > 1 ? pd!.stockQuantity - quantity : 1,
+          }
+        })
+        
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error(error);
+        this.toastr.error(error.error.error);
+        this.isLoading.set(false);
+      },
+    }));
+  }
 }

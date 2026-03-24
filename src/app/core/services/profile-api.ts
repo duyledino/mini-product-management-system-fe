@@ -13,10 +13,9 @@ export class ProfileApi {
     return this.http.get<ApiResponse<Profile>>(this.baseUrl);
   } 
 
-  updateProfile(profile: UpdateProfileRequest){
-    return this.http.put<ApiResponse<Profile>>(this.baseUrl, profile);
+  updateProfile(profileData: FormData){
+    return this.http.put<ApiResponse<Profile>>(this.baseUrl, profileData);
   }
-
   // updatePassword(password: string){
   //   return this.http.put<ApiResponse<Profile>>(this.baseUrl + '/password', { password });
   // }
